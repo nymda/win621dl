@@ -23,14 +23,13 @@ namespace win621dl
         }
 
         public WebClient client = new WebClient();
+        public WebClient downloadClient = new WebClient();
         public int counter = 0;
         public int subcounter = 0;
         public List<String> urls = new List<String> { };
         public string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/win621dl/";
         public int downloadcounter = 0;
         public string current = "";
-
-
 
         public void downloader()
         {
@@ -41,12 +40,10 @@ namespace win621dl
                 {
                     Console.WriteLine(path  + urls[i]);
                     string[] url = urls[i].Split('/');
-                    client.DownloadFile(urls[i], path + "/" + url[6]);
+                    downloadClient.DownloadFile(urls[i], path + "/" + url[6]);
                     current = path + "/" + url[6];
                     i++;
                     downloadcounter++;
-                    //int perc = ((downloadcounter * 100 / counter * 100) / 100);
-                    //Console.WriteLine(perc);
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         dlLbl.Text = "Downloaded: " + downloadcounter;
@@ -73,11 +70,11 @@ namespace win621dl
                 try
                 {
                     data = client.DownloadData(dlstring);
-                    Console.WriteLine("data ended");
+                    //Console.WriteLine("data ended");
                 }
                 catch (Exception e)
                 {
-                    Console.WriteLine("403 ERROR");
+                    //Console.WriteLine("403 ERROR");
                     return;
                 }
 
@@ -97,10 +94,11 @@ namespace win621dl
                             subcounter++;
                             this.Invoke(new MethodInvoker(delegate ()
                             {
-                                Console.WriteLine(final);
+                                //Console.WriteLine(final);
                             }));
                             if (subcounter == 300)
                             {
+                                Console.WriteLine(subcounter);
                                 subcounter = 0;
                                 Console.WriteLine("300");
                                 Thread.Sleep(2500);
@@ -204,7 +202,14 @@ namespace win621dl
 
         private void picBox_Click(object sender, EventArgs e)
         {
-            Process.Start(current);
+            try
+            {
+                Process.Start(current);
+            }
+            catch
+            {
+
+            }
         }
     }
 }
