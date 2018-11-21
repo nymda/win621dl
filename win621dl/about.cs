@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace win621dl
 {
-    public partial class Form1 : Form
+    public partial class about : Form
     {
-        public Form1()
+        public about()
         {
             InitializeComponent();
         }
