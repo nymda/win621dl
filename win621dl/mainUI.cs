@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -47,8 +47,8 @@ namespace win621dl
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         dlLbl.Text = "Downloaded: " + downloadcounter;
-                        progressBar.Maximum = counter;
-                        progressBar.Value = downloadcounter;
+                        int perc = ((downloadcounter * 100 / counter * 100) / 100);
+                        progressBar.Value = perc * 2;
                         picBox.Image = Bitmap.FromFile(path + "/" + url[6]);
                     }));
                 }
