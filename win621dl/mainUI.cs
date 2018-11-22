@@ -20,6 +20,7 @@ namespace win621dl
         public mainUI()
         {
             InitializeComponent();
+            listBox1.MouseDoubleClick += new MouseEventHandler(listBox1_DoubleClick);
         }
 
         public WebClient client = new WebClient();
@@ -30,6 +31,8 @@ namespace win621dl
         public string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/win621dl/";
         public int downloadcounter = 0;
         public string current = "";
+        public int disposecounter = 0;
+        Bitmap b = new Bitmap(10, 10);
 
         public void downloader()
         {
@@ -42,24 +45,40 @@ namespace win621dl
                     string[] url = urls[i].Split('/');
                     downloadClient.DownloadFile(urls[i], path + "/" + url[6]);
                     current = path + "/" + url[6];
-                    i++;
                     downloadcounter++;
+                    disposecounter++;
+                    //b = new Bitmap(Bitmap.FromFile(path + "/" + url[6]));
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         dlLbl.Text = "Downloaded: " + downloadcounter;
                         int perc = ((downloadcounter * 100 / counter * 100) / 100);
                         progressBar.Value = perc * 2;
-                        picBox.Image = Bitmap.FromFile(path + "/" + url[6]);
-                    }));
-                }
-                catch(Exception e)
-                {
+                        //picBox.Image = b;
+                        listBox1.Items.Add("SUCCESS " + url[6]);
 
+                        if(disposecounter == 3)
+                        {
+                            //b.Dispose();
+                            //picBox.Image = null;
+                            disposecounter = 0;
+                        }
+                    }));
+                    i++;
+                    
+                }
+                catch(ArgumentOutOfRangeException)
+                {
+                    Thread.Sleep(10);
+                }
+                catch
+                {
+                    i++;
+                    Console.WriteLine("malformed url");
                 }
             }
         }
 
-        public void newthread(string uri, int mode)
+        public void e621(string uri, int mode)
         {
 
             bool cont = true;
@@ -70,11 +89,9 @@ namespace win621dl
                 try
                 {
                     data = client.DownloadData(dlstring);
-                    //Console.WriteLine("data ended");
                 }
-                catch (Exception e)
+                catch
                 {
-                    //Console.WriteLine("403 ERROR");
                     return;
                 }
 
@@ -84,6 +101,7 @@ namespace win621dl
                 for (int i = 0; i < datarawsplit.Count(); i++)
                 {
                     string[] current = datarawsplit[i].Split(',');
+
                     for (int o = 0; o < current.Count(); o++)
                     {
                         if (current[o].Contains("\"id\":"))
@@ -92,10 +110,6 @@ namespace win621dl
                             string final = current2[1].Replace("\"", string.Empty);
                             counter++;
                             subcounter++;
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
-                                //Console.WriteLine(final);
-                            }));
                             if (subcounter == 300)
                             {
                                 Console.WriteLine(subcounter);
@@ -110,7 +124,7 @@ namespace win621dl
                                 string tags = string.Join("%20", lines);
                                 tags = tags.Replace(" ", string.Empty);
                                 string dlstring2 = "https://e621.net/post/index.json?limit=300&before_id=" + final + "&tags=" + tags;
-                                Thread t = new Thread(() => newthread(dlstring2, 0));
+                                Thread t = new Thread(() => e621(dlstring2, 0));
                                 t.IsBackground = true;
                                 t.Start();
                             }
@@ -157,7 +171,7 @@ namespace win621dl
             string tags = string.Join("%20", lines);
             tags = tags.Replace(" ", string.Empty);
             string dlstring = "https://e621.net/post/index.json?limit=300&&tags=" + tags;
-            Thread t = new Thread(() => newthread(dlstring, 0));
+            Thread t = new Thread(() => e621(dlstring, 0));
             t.IsBackground = true;
             t.Start();
 
@@ -176,9 +190,17 @@ namespace win621dl
             }
         }
 
-        private void infoButton_Click(object sender, EventArgs e)
+        private void listBox1_DoubleClick(object sender, MouseEventArgs e)
         {
-
+            int index = this.listBox1.IndexFromPoint(e.Location);
+            if (index != System.Windows.Forms.ListBox.NoMatches)
+            {
+                string filename = listBox1.SelectedItem.ToString();
+                filename = filename.Replace(" SUCCESS ", string.Empty);
+                string[] filenameArray = filename.Split(new string[] { " " }, StringSplitOptions.None);
+                filename = filenameArray[1];
+                Process.Start(path + "/" + filename);
+            }
         }
 
         private void directoryBtn_Click(object sender, EventArgs e)

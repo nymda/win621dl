@@ -36,9 +36,8 @@
             this.resultsLbl = new System.Windows.Forms.Label();
             this.dlLbl = new System.Windows.Forms.Label();
             this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.picBox = new System.Windows.Forms.PictureBox();
             this.directoryBtn = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.picBox)).BeginInit();
+            this.listBox1 = new System.Windows.Forms.ListBox();
             this.SuspendLayout();
             // 
             // tagBox
@@ -99,20 +98,9 @@
             // progressBar
             // 
             this.progressBar.Location = new System.Drawing.Point(12, 207);
-            this.progressBar.Maximum = 50;
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(518, 23);
             this.progressBar.TabIndex = 8;
-            // 
-            // picBox
-            // 
-            this.picBox.Location = new System.Drawing.Point(240, 12);
-            this.picBox.Name = "picBox";
-            this.picBox.Size = new System.Drawing.Size(290, 189);
-            this.picBox.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.picBox.TabIndex = 9;
-            this.picBox.TabStop = false;
-            this.picBox.Click += new System.EventHandler(this.picBox_Click);
             // 
             // directoryBtn
             // 
@@ -124,13 +112,22 @@
             this.directoryBtn.UseVisualStyleBackColor = true;
             this.directoryBtn.Click += new System.EventHandler(this.directoryBtn_Click);
             // 
+            // listBox1
+            // 
+            this.listBox1.FormattingEnabled = true;
+            this.listBox1.Location = new System.Drawing.Point(240, 12);
+            this.listBox1.Name = "listBox1";
+            this.listBox1.Size = new System.Drawing.Size(290, 186);
+            this.listBox1.TabIndex = 11;
+            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(540, 238);
+            this.ClientSize = new System.Drawing.Size(544, 238);
+            this.Controls.Add(this.listBox1);
             this.Controls.Add(this.directoryBtn);
-            this.Controls.Add(this.picBox);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.dlLbl);
             this.Controls.Add(this.resultsLbl);
@@ -144,7 +141,6 @@
             this.Name = "mainUI";
             this.Text = "win621dl";
             this.Load += new System.EventHandler(this.mainUI_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.picBox)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -159,8 +155,10 @@
         private System.Windows.Forms.Label resultsLbl;
         private System.Windows.Forms.Label dlLbl;
         private System.Windows.Forms.ProgressBar progressBar;
-        private System.Windows.Forms.PictureBox picBox;
         private System.Windows.Forms.Button directoryBtn;
+        private System.Windows.Forms.ListBox listBox1;
+
+
     }
 }
 
