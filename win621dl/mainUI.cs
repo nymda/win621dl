@@ -25,6 +25,7 @@ namespace win621dl
 
         public WebClient client = new WebClient();
         public WebClient downloadClient = new WebClient();
+        public WebClient backupClient = new WebClient();
         public int counter = 0;
         public int subcounter = 0;
         public List<String> urls = new List<String> { };
@@ -33,6 +34,9 @@ namespace win621dl
         public string current = "";
         public int disposecounter = 0;
         Bitmap b = new Bitmap(10, 10);
+        public int tres = 0;
+        public int page = 1;
+        public int IBallresults = 0;
 
         public void downloader()
         {
@@ -47,21 +51,12 @@ namespace win621dl
                     current = path + "/" + url[6];
                     downloadcounter++;
                     disposecounter++;
-                    //b = new Bitmap(Bitmap.FromFile(path + "/" + url[6]));
                     this.Invoke(new MethodInvoker(delegate ()
                     {
                         dlLbl.Text = "Downloaded: " + downloadcounter;
                         int perc = ((downloadcounter * 100 / counter * 100) / 100);
                         progressBar.Value = perc * 2;
-                        //picBox.Image = b;
-                        listBox1.Items.Add("SUCCESS " + url[6]);
-
-                        if(disposecounter == 3)
-                        {
-                            //b.Dispose();
-                            //picBox.Image = null;
-                            disposecounter = 0;
-                        }
+                        listBox1.Items.Insert(0, "SUCCESS " + url[6]);
                     }));
                     i++;
                     
@@ -78,21 +73,70 @@ namespace win621dl
             }
         }
 
-        public void e621(string uri, int mode)
+        public void downloaderIB()
+        {
+            int i = 0;
+            for (; ; )
+            {
+                try
+                {
+                    Console.WriteLine(path + urls[i]);
+                    string[] url = urls[i].Split('/');
+                    downloadClient.DownloadFile(urls[i], path + "/" + url[6]);
+                    current = path + "/" + url[6];
+                    downloadcounter++;
+                    disposecounter++;
+                    this.Invoke(new MethodInvoker(delegate ()
+                    {
+                        dlLbl.Text = "Downloaded: " + downloadcounter;
+                        int perc = ((downloadcounter * 100 / IBallresults * 100) / 100);
+                        progressBar.Value = perc * 2;
+                        listBox1.Items.Insert(0, "SUCCESS " + url[6]);
+                    }));
+                    i++;
+
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    Thread.Sleep(10);
+                }
+                catch
+                {
+                    i++;
+                    Console.WriteLine("malformed url");
+                }
+            }
+        }
+
+        public void e621(string uri)
         {
 
             bool cont = true;
             while (cont)
             {
                 string dlstring = uri;
-                byte[] data;
-                try
+                byte[] data = { 00 };
+                if (client.IsBusy)
                 {
-                    data = client.DownloadData(dlstring);
+                    try
+                    {
+                        data = backupClient.DownloadData(dlstring);
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
-                catch
+                if(!client.IsBusy)
                 {
-                    return;
+                    try
+                    {
+                        data = client.DownloadData(dlstring);
+                    }
+                    catch
+                    {
+                        return;
+                    }
                 }
 
                 string dataraw = System.Text.Encoding.UTF8.GetString(data);
@@ -115,7 +159,7 @@ namespace win621dl
                                 Console.WriteLine(subcounter);
                                 subcounter = 0;
                                 Console.WriteLine("300");
-                                Thread.Sleep(2500);
+                                Thread.Sleep(600);
                                 Random random = new Random();
                                 const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
                                 string rand = new string(Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray());
@@ -124,7 +168,7 @@ namespace win621dl
                                 string tags = string.Join("%20", lines);
                                 tags = tags.Replace(" ", string.Empty);
                                 string dlstring2 = "https://e621.net/post/index.json?limit=300&before_id=" + final + "&tags=" + tags;
-                                Thread t = new Thread(() => e621(dlstring2, 0));
+                                Thread t = new Thread(() => e621(dlstring2));
                                 t.IsBackground = true;
                                 t.Start();
                             }
@@ -148,10 +192,144 @@ namespace win621dl
                                 urls.Add(final);
                                 resultsLbl.Text = "Results: " + (counter / 2).ToString();
                             }));
-                            if (mode == 0)
+                        }
+                    }
+                }
+            }
+        }
+
+        public void inkbunny(string uri)
+        {
+            bool cont = true;
+            bool got_pages_count = false;
+            bool got_rid = false;
+            bool set_results = false;
+            int c = -1;
+            int pages = 0;
+            string rid = "";
+            int currentpageresults = 0;
+
+            while (cont)
+            {
+                string dlstring = uri;
+                byte[] data = { 00 };
+                if (client.IsBusy)
+                {
+                    try
+                    {
+                        data = backupClient.DownloadData(dlstring);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+                if (!client.IsBusy)
+                {
+                    try
+                    {
+                        data = client.DownloadData(dlstring);
+                    }
+                    catch
+                    {
+                        return;
+                    }
+                }
+
+                string dataraw = System.Text.Encoding.UTF8.GetString(data);
+                string[] datarawsplit = dataraw.Split(new string[] { "},{" }, StringSplitOptions.None);
+
+                for (int i = 0; i < datarawsplit.Count(); i++)
+                {
+                    string[] current = datarawsplit[i].Split(',');
+                    for (int o = 0; o < current.Count(); o++)
+                    {
+                        if (current[o].Contains("pages_count"))
+                        {
+                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
+                            string final = current2[1].Replace("\"", string.Empty);
+                            pages = Int32.Parse(final);
+                            got_pages_count = true;
+                            Console.WriteLine(final);
+                        }
+
+                        if (current[o].Contains("pages_count"))
+                        {
+                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
+                            string final = current2[1].Replace("\"", string.Empty);
+                            pages = Int32.Parse(final);
+                            got_pages_count = true;
+                            Console.WriteLine(final);
+                        }
+
+                        if (current[o].Contains("rid\":"))
+                        {
+                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
+                            string final = current2[1].Replace("\"", string.Empty);
+                            rid = final;
+                            got_rid = true;
+                            Console.WriteLine(final);
+                        }
+
+                        if (current[o].Contains("results_count_thispage\":"))
+                        {
+                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
+                            string final = current2[1].Replace("\"", string.Empty);
+                            currentpageresults = Int32.Parse(final);
+                            Console.WriteLine(final);
+                        }
+
+                        if (current[o].Contains("results_count_all\":") && set_results == false)
+                        {
+                            Console.WriteLine(current[o]);
+                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
+                            string final = current2[1].Replace("\"", string.Empty);
+                            IBallresults = Int32.Parse(final);
+                            set_results = true;
+                            this.Invoke(new MethodInvoker(delegate ()
+                            {
+                                resultsLbl.Text = "Results: " + IBallresults.ToString();
+                            }));
+                        }
+
+                        if (current[o].Contains("file_url_full"))
+                        {
+                            try
+                            {
+                                tres++;
+                                this.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    //listBox1.Items.Add(tres.ToString());
+                                }));
+                                string[] current2 = current[o].Split(new string[] { "\":\"" }, StringSplitOptions.None);
+                                string final = current2[1].Replace("\"", string.Empty);
+                                final = final.Replace(@"\/", @"/");
+                                this.Invoke(new MethodInvoker(delegate ()
+                                {
+                                    urls.Add(final);
+                                    //resultsLbl.Text = "Results: " + (counter / 2).ToString();
+                                }));
+                                Console.WriteLine(final);
+                                c++;
+                            }
+                            catch
                             {
 
                             }
+                        }
+
+                        if (current[o].Contains("}]}"))
+                        {
+                            Console.WriteLine(current[o]);
+                            page++;
+                            this.Invoke(new MethodInvoker(delegate ()
+                            {
+                                //listBox1.Items.Add(page);
+                            }));
+                            Thread t = new Thread(() => inkbunny(uri + "&page=" + page));
+                            t.IsBackground = true;
+                            t.Start();
+                            return;
                         }
                     }
                 }
@@ -166,23 +344,47 @@ namespace win621dl
             Random random = new Random();
             const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
             string rand = new string(Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray());
-            client.Headers.Add("user-agent", "win621d_" + rand);
             string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             string tags = string.Join("%20", lines);
             tags = tags.Replace(" ", string.Empty);
-            string dlstring = "https://e621.net/post/index.json?limit=300&&tags=" + tags;
-            Thread t = new Thread(() => e621(dlstring, 0));
-            t.IsBackground = true;
-            t.Start();
 
-            Thread d = new Thread(() => downloader());
-            d.IsBackground = true;
-            d.Start();
+            if (radioButton1.Checked)
+            {
+                client.Headers.Add("user-agent", "win621d_" + rand);
+
+                string dlstring = "https://e621.net/post/index.json?limit=300&&tags=" + tags;
+
+                Thread t = new Thread(() => e621(dlstring));
+                t.IsBackground = true;
+                t.Start();
+
+                Thread d = new Thread(() => downloader());
+                d.IsBackground = true;
+                d.Start();
+            }
+            if (radioButton2.Checked)
+            {
+                byte[] sidbytes = client.DownloadData("https://inkbunny.net/api_login.php?username=guest&password=");
+                string siddatastr = System.Text.Encoding.UTF8.GetString(sidbytes);
+                string[] siddata1 = siddatastr.Split(',');
+                string[] siddata2 = siddata1[0].Split(':');
+                string siddata = siddata2[1];
+                string sid = siddata.Replace("\"", string.Empty);
+
+                string dlstring = "https://inkbunny.net/api_search.php?sid=" + sid + "&text=" + tags + "&orderby=views&get_rid=yes";
+
+                Thread t = new Thread(() => inkbunny(dlstring));
+                t.IsBackground = true;
+                t.Start();
+
+                Thread d = new Thread(() => downloaderIB());
+                d.IsBackground = true;
+                d.Start();
+            }
         }
 
         private void mainUI_Load(object sender, EventArgs e)
         {
-            //client.Headers.Add("user-agent", "win621dl");
             String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
             if(!Directory.Exists(path + "/win621dl/"))
             {

@@ -38,6 +38,8 @@
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.directoryBtn = new System.Windows.Forms.Button();
             this.listBox1 = new System.Windows.Forms.ListBox();
+            this.radioButton1 = new System.Windows.Forms.RadioButton();
+            this.radioButton2 = new System.Windows.Forms.RadioButton();
             this.SuspendLayout();
             // 
             // tagBox
@@ -80,7 +82,7 @@
             // resultsLbl
             // 
             this.resultsLbl.AutoSize = true;
-            this.resultsLbl.Location = new System.Drawing.Point(12, 149);
+            this.resultsLbl.Location = new System.Drawing.Point(9, 172);
             this.resultsLbl.Name = "resultsLbl";
             this.resultsLbl.Size = new System.Drawing.Size(48, 13);
             this.resultsLbl.TabIndex = 5;
@@ -89,7 +91,7 @@
             // dlLbl
             // 
             this.dlLbl.AutoSize = true;
-            this.dlLbl.Location = new System.Drawing.Point(12, 162);
+            this.dlLbl.Location = new System.Drawing.Point(9, 185);
             this.dlLbl.Name = "dlLbl";
             this.dlLbl.Size = new System.Drawing.Size(70, 13);
             this.dlLbl.TabIndex = 6;
@@ -97,14 +99,14 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(12, 207);
+            this.progressBar.Location = new System.Drawing.Point(12, 230);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(518, 23);
             this.progressBar.TabIndex = 8;
             // 
             // directoryBtn
             // 
-            this.directoryBtn.Location = new System.Drawing.Point(12, 178);
+            this.directoryBtn.Location = new System.Drawing.Point(12, 201);
             this.directoryBtn.Name = "directoryBtn";
             this.directoryBtn.Size = new System.Drawing.Size(219, 23);
             this.directoryBtn.TabIndex = 10;
@@ -117,15 +119,38 @@
             this.listBox1.FormattingEnabled = true;
             this.listBox1.Location = new System.Drawing.Point(240, 12);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(290, 186);
+            this.listBox1.Size = new System.Drawing.Size(290, 212);
             this.listBox1.TabIndex = 11;
-            this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
+            // 
+            // radioButton1
+            // 
+            this.radioButton1.AutoSize = true;
+            this.radioButton1.Checked = true;
+            this.radioButton1.Location = new System.Drawing.Point(12, 152);
+            this.radioButton1.Name = "radioButton1";
+            this.radioButton1.Size = new System.Drawing.Size(49, 17);
+            this.radioButton1.TabIndex = 12;
+            this.radioButton1.TabStop = true;
+            this.radioButton1.Text = "e621";
+            this.radioButton1.UseVisualStyleBackColor = true;
+            // 
+            // radioButton2
+            // 
+            this.radioButton2.AutoSize = true;
+            this.radioButton2.Location = new System.Drawing.Point(67, 152);
+            this.radioButton2.Name = "radioButton2";
+            this.radioButton2.Size = new System.Drawing.Size(69, 17);
+            this.radioButton2.TabIndex = 13;
+            this.radioButton2.Text = "Inkbunny";
+            this.radioButton2.UseVisualStyleBackColor = true;
             // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(544, 238);
+            this.ClientSize = new System.Drawing.Size(544, 260);
+            this.Controls.Add(this.radioButton2);
+            this.Controls.Add(this.radioButton1);
             this.Controls.Add(this.listBox1);
             this.Controls.Add(this.directoryBtn);
             this.Controls.Add(this.progressBar);
@@ -157,8 +182,8 @@
         private System.Windows.Forms.ProgressBar progressBar;
         private System.Windows.Forms.Button directoryBtn;
         private System.Windows.Forms.ListBox listBox1;
-
-
+        private System.Windows.Forms.RadioButton radioButton1;
+        private System.Windows.Forms.RadioButton radioButton2;
     }
 }
 
