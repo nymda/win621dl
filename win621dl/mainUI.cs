@@ -78,6 +78,12 @@ namespace win621dl
             int i = 0;
             for (; ; )
             {
+
+                if(downloadcounter == IBallresults && downloadcounter > 0)
+                {
+                    return;
+                }
+
                 try
                 {
                     Console.WriteLine(path + urls[i]);
@@ -88,10 +94,17 @@ namespace win621dl
                     disposecounter++;
                     this.Invoke(new MethodInvoker(delegate ()
                     {
-                        dlLbl.Text = "Downloaded: " + downloadcounter;
-                        int perc = ((downloadcounter * 100 / IBallresults * 100) / 100);
-                        progressBar.Value = perc * 2;
-                        listBox1.Items.Insert(0, "SUCCESS " + url[6]);
+                        try
+                        {
+                            dlLbl.Text = "Downloaded: " + downloadcounter;
+                            int perc = ((downloadcounter * 100 / IBallresults * 100) / 100);
+                            progressBar.Value = perc;
+                            listBox1.Items.Insert(0, "SUCCESS " + url[6]);
+                        }
+                        catch
+                        {
+
+                        }
                     }));
                     i++;
 
