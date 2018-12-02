@@ -37,6 +37,7 @@ namespace win621dl
         public int tres = 0;
         public int page = 1;
         public int IBallresults = 0;
+        public bool invalidSid;
 
         public void downloader()
         {
@@ -75,6 +76,10 @@ namespace win621dl
 
         public void downloaderIB()
         {
+            if (invalidSid)
+            {
+                return;
+            }
             int i = 0;
             for (; ; )
             {
@@ -123,7 +128,6 @@ namespace win621dl
 
         public void e621(string uri)
         {
-
             bool cont = true;
             while (cont)
             {
@@ -249,6 +253,38 @@ namespace win621dl
                     }
                 }
 
+                if(System.Text.Encoding.UTF8.GetString(data).Contains("Invalid Session ID") || System.Text.Encoding.UTF8.GetString(data).Contains("No Session ID"))
+                {
+                    Console.WriteLine("INVALID SID");
+
+                    invalidSid = true;
+
+                    string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+                    string tags = string.Join("%20", lines);
+                    tags = tags.Replace(" ", string.Empty);
+                    byte[] sidbytes = client.DownloadData("https://inkbunny.net/api_login.php?username=guest&password=");
+                    string siddatastr = System.Text.Encoding.UTF8.GetString(sidbytes);
+                    string[] siddata1 = siddatastr.Split(',');
+                    string[] siddata2 = siddata1[0].Split(':');
+                    string siddata = siddata2[1];
+                    string sid = siddata.Replace("\"", string.Empty);
+                    Console.WriteLine(sid);
+
+                    invalidSid = false;
+
+                    string dlstring2 = "https://inkbunny.net/api_search.php?sid=" + sid + "&text=" + tags + "&orderby=views&get_rid=yes";
+
+                    Thread t = new Thread(() => inkbunny(dlstring2));
+                    t.IsBackground = true;
+                    t.Start();
+
+                    Thread d = new Thread(() => downloaderIB());
+                    d.IsBackground = true;
+                    d.Start();
+                }
+
+                Console.WriteLine(data.Length);
+                Console.WriteLine(System.Text.Encoding.UTF8.GetString(data));
                 string dataraw = System.Text.Encoding.UTF8.GetString(data);
                 string[] datarawsplit = dataraw.Split(new string[] { "},{" }, StringSplitOptions.None);
 
@@ -377,6 +413,7 @@ namespace win621dl
             }
             if (radioButton2.Checked)
             {
+                invalidSid = false;
                 byte[] sidbytes = client.DownloadData("https://inkbunny.net/api_login.php?username=guest&password=");
                 string siddatastr = System.Text.Encoding.UTF8.GetString(sidbytes);
                 string[] siddata1 = siddatastr.Split(',');
