@@ -302,15 +302,6 @@ namespace win621dl
                             Console.WriteLine(final);
                         }
 
-                        if (current[o].Contains("pages_count"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            pages = Int32.Parse(final);
-                            got_pages_count = true;
-                            Console.WriteLine(final);
-                        }
-
                         if (current[o].Contains("rid\":"))
                         {
                             string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
