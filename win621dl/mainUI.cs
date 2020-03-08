@@ -12,422 +12,29 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace win621dl
 {
+    
+
     public partial class mainUI : Form
     {
+        public List<List<string>> Urls = new List<List<string>>();
+        public int rescount = 0;
+
+        //handling buttons / GUI elements
         public mainUI()
         {
             InitializeComponent();
             listBox1.MouseDoubleClick += new MouseEventHandler(listBox1_DoubleClick);
         }
 
-        public WebClient client = new WebClient();
-        public WebClient downloadClient = new WebClient();
-        public WebClient backupClient = new WebClient();
-        public int counter = 0;
-        public int subcounter = 0;
-        public List<String> urls = new List<String> { };
-        public string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/win621dl/";
-        public int downloadcounter = 0;
-        public string current = "";
-        public int disposecounter = 0;
-        Bitmap b = new Bitmap(10, 10);
-        public int tres = 0;
-        public int page = 1;
-        public int IBallresults = 0;
-        public bool invalidSid;
-
-        public void downloader()
-        {
-            int i = 0;
-            for(; ; )
-            {
-                try
-                {
-                    Console.WriteLine(path  + urls[i]);
-                    string[] url = urls[i].Split('/');
-                    downloadClient.DownloadFile(urls[i], path + "/" + url[6]);
-                    current = path + "/" + url[6];
-                    downloadcounter++;
-                    disposecounter++;
-                    this.Invoke(new MethodInvoker(delegate ()
-                    {
-                        dlLbl.Text = "Downloaded: " + downloadcounter;
-                        int perc = ((downloadcounter * 100 / counter * 100) / 100);
-                        progressBar.Value = perc * 2;
-                        listBox1.Items.Insert(0, "SUCCESS " + url[6]);
-                    }));
-                    i++;
-                    
-                }
-                catch(ArgumentOutOfRangeException)
-                {
-                    Thread.Sleep(10);
-                }
-                catch
-                {
-                    i++;
-                    Console.WriteLine("malformed url");
-                }
-            }
-        }
-
-        public void downloaderIB()
-        {
-            if (invalidSid)
-            {
-                return;
-            }
-            int i = 0;
-            for (; ; )
-            {
-
-                if(downloadcounter == IBallresults && downloadcounter > 0)
-                {
-                    return;
-                }
-
-                try
-                {
-                    Console.WriteLine(path + urls[i]);
-                    string[] url = urls[i].Split('/');
-                    downloadClient.DownloadFile(urls[i], path + "/" + url[6]);
-                    current = path + "/" + url[6];
-                    downloadcounter++;
-                    disposecounter++;
-                    this.Invoke(new MethodInvoker(delegate ()
-                    {
-                        try
-                        {
-                            dlLbl.Text = "Downloaded: " + downloadcounter;
-                            int perc = ((downloadcounter * 100 / IBallresults * 100) / 100);
-                            progressBar.Value = perc;
-                            listBox1.Items.Insert(0, "SUCCESS " + url[6]);
-                        }
-                        catch
-                        {
-
-                        }
-                    }));
-                    i++;
-
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    Thread.Sleep(10);
-                }
-                catch
-                {
-                    i++;
-                    Console.WriteLine("malformed url");
-                }
-            }
-        }
-
-        public void e621(string uri)
-        {
-            bool cont = true;
-            while (cont)
-            {
-                string dlstring = uri;
-                byte[] data = { 00 };
-                if (client.IsBusy)
-                {
-                    try
-                    {
-                        data = backupClient.DownloadData(dlstring);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-                if(!client.IsBusy)
-                {
-                    try
-                    {
-                        data = client.DownloadData(dlstring);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-
-                string dataraw = System.Text.Encoding.UTF8.GetString(data);
-                string[] datarawsplit = dataraw.Split(new string[] { "]}" }, StringSplitOptions.None);
-
-                for (int i = 0; i < datarawsplit.Count(); i++)
-                {
-                    string[] current = datarawsplit[i].Split(',');
-
-                    for (int o = 0; o < current.Count(); o++)
-                    {
-                        if (current[o].Contains("\"id\":"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { ":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            counter++;
-                            subcounter++;
-                            if (subcounter == 300)
-                            {
-                                Console.WriteLine(subcounter);
-                                subcounter = 0;
-                                Console.WriteLine("300");
-                                Thread.Sleep(600);
-                                Random random = new Random();
-                                const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-                                string rand = new string(Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray());
-                                client.Headers.Add("user-agent", "win621d_" + rand);
-                                string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                                string tags = string.Join("%20", lines);
-                                tags = tags.Replace(" ", string.Empty);
-                                string dlstring2 = "https://e621.net/post/index.json?limit=300&before_id=" + final + "&tags=" + tags;
-                                Thread t = new Thread(() => e621(dlstring2));
-                                t.IsBackground = true;
-                                t.Start();
-                            }
-                        }
-                    }
-                }
-
-                for (int i = 0; i < datarawsplit.Count(); i++)
-                {
-                    string[] current = datarawsplit[i].Split(',');
-                    for (int o = 0; o < current.Count(); o++)
-                    {
-                        if (current[o].Contains("file_url"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { "\":\"" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            counter++;
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
-                                //Console.WriteLine(final);
-                                urls.Add(final);
-                                resultsLbl.Text = "Results: " + (counter / 2).ToString();
-                            }));
-                        }
-                    }
-                }
-            }
-        }
-
-        public void inkbunny(string uri)
-        {
-            bool cont = true;
-            bool got_pages_count = false;
-            bool got_rid = false;
-            bool set_results = false;
-            int c = -1;
-            int pages = 0;
-            string rid = "";
-            int currentpageresults = 0;
-
-            while (cont)
-            {
-                string dlstring = uri;
-                byte[] data = { 00 };
-                if (client.IsBusy)
-                {
-                    try
-                    {
-                        data = backupClient.DownloadData(dlstring);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-                if (!client.IsBusy)
-                {
-                    try
-                    {
-                        data = client.DownloadData(dlstring);
-                    }
-                    catch
-                    {
-                        return;
-                    }
-                }
-
-                if(System.Text.Encoding.UTF8.GetString(data).Contains("Invalid Session ID") || System.Text.Encoding.UTF8.GetString(data).Contains("No Session ID"))
-                {
-                    Console.WriteLine("INVALID SID");
-
-                    invalidSid = true;
-
-                    string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-                    string tags = string.Join("%20", lines);
-                    tags = tags.Replace(" ", string.Empty);
-                    byte[] sidbytes = client.DownloadData("https://inkbunny.net/api_login.php?username=guest&password=");
-                    string siddatastr = System.Text.Encoding.UTF8.GetString(sidbytes);
-                    string[] siddata1 = siddatastr.Split(',');
-                    string[] siddata2 = siddata1[0].Split(':');
-                    string siddata = siddata2[1];
-                    string sid = siddata.Replace("\"", string.Empty);
-                    Console.WriteLine(sid);
-
-                    invalidSid = false;
-
-                    string dlstring2 = "https://inkbunny.net/api_search.php?sid=" + sid + "&text=" + tags + "&orderby=views&get_rid=yes";
-
-                    Thread t = new Thread(() => inkbunny(dlstring2));
-                    t.IsBackground = true;
-                    t.Start();
-
-                    Thread d = new Thread(() => downloaderIB());
-                    d.IsBackground = true;
-                    d.Start();
-                }
-
-                Console.WriteLine(data.Length);
-                Console.WriteLine(System.Text.Encoding.UTF8.GetString(data));
-                string dataraw = System.Text.Encoding.UTF8.GetString(data);
-                string[] datarawsplit = dataraw.Split(new string[] { "},{" }, StringSplitOptions.None);
-
-                for (int i = 0; i < datarawsplit.Count(); i++)
-                {
-                    string[] current = datarawsplit[i].Split(',');
-                    for (int o = 0; o < current.Count(); o++)
-                    {
-                        if (current[o].Contains("pages_count"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            pages = Int32.Parse(final);
-                            got_pages_count = true;
-                            Console.WriteLine(final);
-                        }
-
-                        if (current[o].Contains("rid\":"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            rid = final;
-                            got_rid = true;
-                            Console.WriteLine(final);
-                        }
-
-                        if (current[o].Contains("results_count_thispage\":"))
-                        {
-                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            currentpageresults = Int32.Parse(final);
-                            Console.WriteLine(final);
-                        }
-
-                        if (current[o].Contains("results_count_all\":") && set_results == false)
-                        {
-                            Console.WriteLine(current[o]);
-                            string[] current2 = current[o].Split(new string[] { "\":" }, StringSplitOptions.None);
-                            string final = current2[1].Replace("\"", string.Empty);
-                            IBallresults = Int32.Parse(final);
-                            set_results = true;
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
-                                resultsLbl.Text = "Results: " + IBallresults.ToString();
-                            }));
-                        }
-
-                        if (current[o].Contains("file_url_full"))
-                        {
-                            try
-                            {
-                                tres++;
-                                this.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    //listBox1.Items.Add(tres.ToString());
-                                }));
-                                string[] current2 = current[o].Split(new string[] { "\":\"" }, StringSplitOptions.None);
-                                string final = current2[1].Replace("\"", string.Empty);
-                                final = final.Replace(@"\/", @"/");
-                                this.Invoke(new MethodInvoker(delegate ()
-                                {
-                                    urls.Add(final);
-                                    //resultsLbl.Text = "Results: " + (counter / 2).ToString();
-                                }));
-                                Console.WriteLine(final);
-                                c++;
-                            }
-                            catch
-                            {
-
-                            }
-                        }
-
-                        if (current[o].Contains("}]}"))
-                        {
-                            Console.WriteLine(current[o]);
-                            page++;
-                            this.Invoke(new MethodInvoker(delegate ()
-                            {
-                                //listBox1.Items.Add(page);
-                            }));
-                            Thread t = new Thread(() => inkbunny(uri + "&page=" + page));
-                            t.IsBackground = true;
-                            t.Start();
-                            return;
-                        }
-                    }
-                }
-            }
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            directoryBtn.Enabled = false;
-            button3.Enabled = false;
-            tagBox.Enabled = false;
-            Random random = new Random();
-            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
-            string rand = new string(Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray());
-            string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
-            string tags = string.Join("%20", lines);
-            tags = tags.Replace(" ", string.Empty);
-
-            if (radioButton1.Checked)
-            {
-                client.Headers.Add("user-agent", "win621d_" + rand);
-
-                string dlstring = "https://e621.net/post/index.json?limit=300&&tags=" + tags;
-
-                Thread t = new Thread(() => e621(dlstring));
-                t.IsBackground = true;
-                t.Start();
-
-                Thread d = new Thread(() => downloader());
-                d.IsBackground = true;
-                d.Start();
-            }
-            if (radioButton2.Checked)
-            {
-                invalidSid = false;
-                byte[] sidbytes = client.DownloadData("https://inkbunny.net/api_login.php?username=guest&password=");
-                string siddatastr = System.Text.Encoding.UTF8.GetString(sidbytes);
-                string[] siddata1 = siddatastr.Split(',');
-                string[] siddata2 = siddata1[0].Split(':');
-                string siddata = siddata2[1];
-                string sid = siddata.Replace("\"", string.Empty);
-
-                string dlstring = "https://inkbunny.net/api_search.php?sid=" + sid + "&text=" + tags + "&orderby=views&get_rid=yes";
-
-                Thread t = new Thread(() => inkbunny(dlstring));
-                t.IsBackground = true;
-                t.Start();
-
-                Thread d = new Thread(() => downloaderIB());
-                d.IsBackground = true;
-                d.Start();
-            }
-        }
-
         private void mainUI_Load(object sender, EventArgs e)
         {
             String path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-            if(!Directory.Exists(path + "/win621dl/"))
+            if (!Directory.Exists(path + "/win621dl/"))
             {
                 Directory.CreateDirectory(path + "/win621dl/");
             }
@@ -465,16 +72,228 @@ namespace win621dl
             about.Show();
         }
 
-        private void picBox_Click(object sender, EventArgs e)
+        public string getRandomHeader()
         {
-            try
-            {
-                Process.Start(current);
-            }
-            catch
-            {
+            Random random = new Random();
+            const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+            string rand = new string(Enumerable.Repeat(chars, 5).Select(s => s[random.Next(s.Length)]).ToArray());
+            return ("win621d_" + rand);
+        }
 
+
+        //main data processing
+        public string path = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments) + "/win621dl/"; 
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            tagBox.Text = tagBox.Text.Replace(" ", Environment.NewLine);
+            string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
+            string tags = string.Join("%20", lines);
+            tags = tags.Replace(" ", string.Empty);
+
+            Thread e6 = new Thread(() => e621dl(tags, 9999999));
+            e6.IsBackground = true;
+            e6.Start();
+        }
+
+        //e621 downloader
+        public void e621dl(string tags, int prevLastID)
+        {
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                label2.Text = "Status: Getting URL data...";
+                directoryBtn.Enabled = false;
+                button3.Enabled = false;
+            }));
+
+            WebClient w = new WebClient();
+            w.Headers.Add("user-agent", getRandomHeader());
+
+            Console.WriteLine(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID);
+            byte[] dldata = w.DownloadData(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID);
+            string dataraw = System.Text.Encoding.UTF8.GetString(dldata);
+            dataraw = dataraw.Replace("\"has\":null", "\"has\":false");
+            dataraw = dataraw.Replace("\"status_locked\":null", "\"status_locked\":false");
+            var parsedJson = JsonConvert.DeserializeObject<RootObject>(dataraw);
+            int results = parsedJson.posts.Count();
+            rescount += results;
+            int lastID = 0;
+
+            for (int i = 0; i < parsedJson.posts.Count(); i++)
+            {
+                string url = parsedJson.posts[i].file.url;
+                lastID = parsedJson.posts[i].id;
+                if(url != null)
+                {
+                    if (url.Length > 5)
+                    {
+                        Urls.Add(new List<string> { url, parsedJson.posts[i].score.total.ToString(), string.Join(", ", parsedJson.posts[i].tags.artist), parsedJson.posts[i].id.ToString(), parsedJson.posts[i].description });
+                        //Console.WriteLine(url);
+                    }
+                }
+            }
+
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                resultsLbl.Text = "Results: " + rescount.ToString();
+            }));
+
+            if (results < 300)
+            {
+                Console.WriteLine("stopped : " + rescount);
+                download();
+            }
+            else
+            {
+                e621dl(tags, lastID);
             }
         }
+
+        public void download()
+        {
+            Console.WriteLine(Urls.Count());
+
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                label2.Text = "Status: Downloading images...";
+                progressBar.Maximum = Urls.Count();
+            }));
+
+            int dlCount = 0;
+
+            Stopwatch stopWatch = new Stopwatch();
+            stopWatch.Start();
+            foreach (List<String> dat in Urls)
+            {
+                WebClient dlCli = new WebClient();
+                string[] fileNameSplit = dat[0].Split('/');
+                string fileName = fileNameSplit[fileNameSplit.Length - 1];
+                dlCli.DownloadFile(dat[0], path + "/" + fileName);
+                dlCount++;
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    dlLbl.Text = "Downloaded: " + dlCount;
+                    label3.Text = "Name: " + fileName;
+                    label4.Text = "Score: " + dat[1];
+                    label5.Text = "Artist: " + dat[2];
+                    label6.Text = "ID: " + dat[3];
+                    textBox1.Text = dat[4];
+                    listBox1.Items.Insert(0, "SUCCESS: " + fileName);
+                    progressBar.Value = dlCount;
+                }));
+            }
+
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+
+            this.Invoke(new MethodInvoker(delegate ()
+            {
+                done done = new done(dlCount.ToString(), elapsedTime);
+                done.Show();
+                label2.Text = "Status: Done!";
+                directoryBtn.Enabled = true;
+                button3.Enabled = true;
+            }));
+        }
+
+        private void radioButton1_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        //todo: better inkbunny downloader
+    }
+
+    public class File
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+        public string ext { get; set; }
+        public int size { get; set; }
+        public string md5 { get; set; }
+        public string url { get; set; }
+    }
+
+    public class Preview
+    {
+        public int width { get; set; }
+        public int height { get; set; }
+        public string url { get; set; }
+    }
+
+    public class Sample
+    {
+        public bool has { get; set; }
+        public int height { get; set; }
+        public int width { get; set; }
+        public string url { get; set; }
+    }
+
+    public class Score
+    {
+        public int up { get; set; }
+        public int down { get; set; }
+        public int total { get; set; }
+    }
+
+    public class Tags
+    {
+        public List<string> general { get; set; }
+        public List<string> species { get; set; }
+        public List<object> character { get; set; }
+        public List<object> copyright { get; set; }
+        public List<object> artist { get; set; }
+        public List<object> invalid { get; set; }
+        public List<object> lore { get; set; }
+        public List<object> meta { get; set; }
+    }
+
+    public class Flags
+    {
+        public bool pending { get; set; }
+        public bool flagged { get; set; }
+        public bool note_locked { get; set; }
+        public bool status_locked { get; set; }
+        public bool rating_locked { get; set; }
+        public bool deleted { get; set; }
+    }
+
+    public class Relationships
+    {
+        public int? parent_id { get; set; }
+        public bool has_children { get; set; }
+        public bool has_active_children { get; set; }
+        public List<object> children { get; set; }
+    }
+
+    public class Post
+    {
+        public int id { get; set; }
+        public DateTime created_at { get; set; }
+        public DateTime? updated_at { get; set; }
+        public File file { get; set; }
+        public Preview preview { get; set; }
+        public Sample sample { get; set; }
+        public Score score { get; set; }
+        public Tags tags { get; set; }
+        public List<object> locked_tags { get; set; }
+        public int change_seq { get; set; }
+        public Flags flags { get; set; }
+        public string rating { get; set; }
+        public int fav_count { get; set; }
+        public List<object> sources { get; set; }
+        public List<object> pools { get; set; }
+        public Relationships relationships { get; set; }
+        public int? approver_id { get; set; }
+        public int uploader_id { get; set; }
+        public string description { get; set; }
+        public int comment_count { get; set; }
+        public bool is_favorited { get; set; }
+    }
+
+    public class RootObject
+    {
+        public List<Post> posts { get; set; }
     }
 }
