@@ -109,7 +109,6 @@ namespace win621dl
             WebClient w = new WebClient();
             w.Headers.Add("user-agent", getRandomHeader());
 
-            Console.WriteLine(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID);
             byte[] dldata = w.DownloadData(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID);
             string dataraw = System.Text.Encoding.UTF8.GetString(dldata);
             dataraw = dataraw.Replace("\"has\":null", "\"has\":false");
@@ -128,7 +127,6 @@ namespace win621dl
                     if (url.Length > 5)
                     {
                         Urls.Add(new List<string> { url, parsedJson.posts[i].score.total.ToString(), string.Join(", ", parsedJson.posts[i].tags.artist), parsedJson.posts[i].id.ToString(), parsedJson.posts[i].description });
-                        //Console.WriteLine(url);
                     }
                 }
             }
