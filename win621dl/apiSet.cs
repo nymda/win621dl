@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -26,6 +27,24 @@ namespace win621dl
         private void apiSet_Load(object sender, EventArgs e)
         {
             w.Headers.Add("user-agent", "win621dl - api login test");
+
+            string path = Directory.GetCurrentDirectory() + "/api.txt";
+            if (System.IO.File.Exists(path))
+            {
+                try
+                {
+                    string[] dat = System.IO.File.ReadAllLines(path);
+                    login = dat[0];
+                    api_key = dat[1];
+                    tb_login.Text = login;
+                    tb_key.Text = api_key;
+                }
+                catch
+                {
+                    //malformed file
+                }
+            }
+
         }
 
         private void btnTest_Click(object sender, EventArgs e)

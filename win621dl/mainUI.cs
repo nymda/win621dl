@@ -233,6 +233,11 @@ namespace win621dl
         public int size { get; set; }
         public string md5 { get; set; }
         public string url { get; set; }
+
+        internal static bool Exists(string path)
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public class Preview
