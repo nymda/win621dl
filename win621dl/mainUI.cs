@@ -23,6 +23,9 @@ namespace win621dl
     {
         public List<List<string>> Urls = new List<List<string>>();
         public int rescount = 0;
+        public string login = "";
+        public string key = "";
+        public string appendLoginText = "";
 
         //handling buttons / GUI elements
         public mainUI()
@@ -108,8 +111,7 @@ namespace win621dl
 
             WebClient w = new WebClient();
             w.Headers.Add("user-agent", getRandomHeader());
-
-            byte[] dldata = w.DownloadData(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID);
+            byte[] dldata = w.DownloadData(@"https://e621.net/posts.json?limit=300&tags=" + tags + "+id%3A<" + prevLastID + appendLoginText);
             string dataraw = System.Text.Encoding.UTF8.GetString(dldata);
             dataraw = dataraw.Replace("\"has\":null", "\"has\":false");
             dataraw = dataraw.Replace("\"status_locked\":null", "\"status_locked\":false");
@@ -198,6 +200,26 @@ namespace win621dl
         private void radioButton1_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void progressBar_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            using (var form = new apiSet())
+            {
+                var result = form.ShowDialog();
+                if (result == DialogResult.OK)
+                {
+                    login = form.login;
+                    key = form.api_key;
+                    appendLoginText = "&login=" + login + "&api_key=" + key;
+                    button1.ForeColor = Color.Green;
+                }
+            }
         }
 
         //todo: better inkbunny downloader

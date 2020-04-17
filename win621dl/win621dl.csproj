@@ -56,6 +56,12 @@
     <Compile Include="about.Designer.cs">
       <DependentUpon>about.cs</DependentUpon>
     </Compile>
+    <Compile Include="apiSet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="apiSet.Designer.cs">
+      <DependentUpon>apiSet.cs</DependentUpon>
+    </Compile>
     <Compile Include="done.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +78,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="about.resx">
       <DependentUpon>about.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="apiSet.resx">
+      <DependentUpon>apiSet.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="done.resx">
       <DependentUpon>done.cs</DependentUpon>
