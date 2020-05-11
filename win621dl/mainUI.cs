@@ -22,6 +22,8 @@ namespace win621dl
     public partial class mainUI : Form
     {
         public List<List<string>> Urls = new List<List<string>>();
+        public List<String> skipIDs = new List<String> { };
+        public List<String> saveIDs = new List<String> { };
         public int rescount = 0;
         public string login = "";
         public string key = "";
@@ -93,6 +95,12 @@ namespace win621dl
             string[] lines = tagBox.Text.Split(new string[] { Environment.NewLine }, StringSplitOptions.None);
             string tags = string.Join("%20", lines);
             tags = tags.Replace(" ", string.Empty);
+
+            if(System.IO.File.Exists(path + "/IDs.txt"))
+            {
+                skipIDs = System.IO.File.ReadAllLines(path + "/IDs.txt").ToList();
+                listBox1.Items.Insert(0, "Found " + skipIDs.Count() + " IDs logged.");
+            }
 
             Thread e6 = new Thread(() => e621dl(tags, 9999999));
             e6.IsBackground = true;
@@ -168,19 +176,42 @@ namespace win621dl
                 WebClient dlCli = new WebClient();
                 string[] fileNameSplit = dat[0].Split('/');
                 string fileName = fileNameSplit[fileNameSplit.Length - 1];
-                dlCli.DownloadFile(dat[0], path + "/" + fileName);
-                dlCount++;
+
                 this.Invoke(new MethodInvoker(delegate ()
                 {
-                    dlLbl.Text = "Downloaded: " + dlCount;
                     label3.Text = "Name: " + fileName;
                     label4.Text = "Score: " + dat[1];
                     label5.Text = "Artist: " + dat[2];
                     label6.Text = "ID: " + dat[3];
                     textBox1.Text = dat[4];
-                    listBox1.Items.Insert(0, "SUCCESS: " + fileName);
+                }));
+
+                if (!System.IO.File.Exists(path + "/" + fileName))
+                {
+                    dlCli.DownloadFile(dat[0], path + "/" + fileName);
+                    dlCount++;
+                    this.Invoke(new MethodInvoker(delegate ()
+                    {
+                        listBox1.Items.Insert(0, "SUCCESS: " + fileName);
+                    }));
+                }
+                else
+                {
+                    dlCount++;
+                    this.Invoke(new MethodInvoker(delegate ()
+                    {;
+                        listBox1.Items.Insert(0, "SKIPPED: " + fileName + " (File exists)");
+                    }));
+                }
+
+                this.Invoke(new MethodInvoker(delegate ()
+                {
+                    dlLbl.Text = "Downloaded: " + dlCount;
                     progressBar.Value = dlCount;
                 }));
+
+                saveIDs.Add(dat[3]);
+                System.IO.File.WriteAllLines(path + "/IDs.txt", saveIDs.ToArray());
             }
 
             stopWatch.Stop();
@@ -195,16 +226,6 @@ namespace win621dl
                 directoryBtn.Enabled = true;
                 button3.Enabled = true;
             }));
-        }
-
-        private void radioButton1_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void progressBar_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -233,11 +254,6 @@ namespace win621dl
         public int size { get; set; }
         public string md5 { get; set; }
         public string url { get; set; }
-
-        internal static bool Exists(string path)
-        {
-            throw new NotImplementedException();
-        }
     }
 
     public class Preview

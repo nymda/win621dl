@@ -26,7 +26,7 @@ namespace win621dl
 
         private void apiSet_Load(object sender, EventArgs e)
         {
-            w.Headers.Add("user-agent", "win621dl - api login test");
+            w.Headers.Add("user-agent", "win621dl - api login");
 
             string path = Directory.GetCurrentDirectory() + "/api.txt";
             if (System.IO.File.Exists(path))
