@@ -243,6 +243,13 @@ namespace win621dl
             }
         }
 
+        private void cbGuest_CheckedChanged(object sender, EventArgs e)
+        {
+            tbPassword.Enabled = !cbGuest.Checked;
+            tbUsername.Enabled = !cbGuest.Checked;
+            btnLogin.Enabled = !cbGuest.Checked;
+        }
+
         //todo: better inkbunny downloader
     }
 

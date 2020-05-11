@@ -50,8 +50,8 @@
             this.e621 = new System.Windows.Forms.TabPage();
             this.inkbunny = new System.Windows.Forms.TabPage();
             this.GBlogin = new System.Windows.Forms.GroupBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.textBox3 = new System.Windows.Forms.TextBox();
+            this.tbUsername = new System.Windows.Forms.TextBox();
+            this.tbPassword = new System.Windows.Forms.TextBox();
             this.lbUser = new System.Windows.Forms.Label();
             this.lbPass = new System.Windows.Forms.Label();
             this.cbGuest = new System.Windows.Forms.CheckBox();
@@ -59,7 +59,7 @@
             this.gbOption = new System.Windows.Forms.GroupBox();
             this.tbGallery = new System.Windows.Forms.RadioButton();
             this.rbTag = new System.Windows.Forms.RadioButton();
-            this.textBox4 = new System.Windows.Forms.TextBox();
+            this.tbTags = new System.Windows.Forms.TextBox();
             this.lbTags = new System.Windows.Forms.Label();
             this.button2 = new System.Windows.Forms.Button();
             this.button4 = new System.Windows.Forms.Button();
@@ -298,7 +298,7 @@
             this.inkbunny.Controls.Add(this.button4);
             this.inkbunny.Controls.Add(this.button5);
             this.inkbunny.Controls.Add(this.lbTags);
-            this.inkbunny.Controls.Add(this.textBox4);
+            this.inkbunny.Controls.Add(this.tbTags);
             this.inkbunny.Controls.Add(this.gbOption);
             this.inkbunny.Controls.Add(this.GBlogin);
             this.inkbunny.Location = new System.Drawing.Point(4, 22);
@@ -315,8 +315,8 @@
             this.GBlogin.Controls.Add(this.cbGuest);
             this.GBlogin.Controls.Add(this.lbPass);
             this.GBlogin.Controls.Add(this.lbUser);
-            this.GBlogin.Controls.Add(this.textBox2);
-            this.GBlogin.Controls.Add(this.textBox3);
+            this.GBlogin.Controls.Add(this.tbUsername);
+            this.GBlogin.Controls.Add(this.tbPassword);
             this.GBlogin.Location = new System.Drawing.Point(6, 6);
             this.GBlogin.Name = "GBlogin";
             this.GBlogin.Size = new System.Drawing.Size(359, 74);
@@ -324,19 +324,20 @@
             this.GBlogin.TabStop = false;
             this.GBlogin.Text = "Login";
             // 
-            // textBox2
+            // tbUsername
             // 
-            this.textBox2.Location = new System.Drawing.Point(74, 19);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(100, 20);
-            this.textBox2.TabIndex = 1;
+            this.tbUsername.Location = new System.Drawing.Point(74, 19);
+            this.tbUsername.Name = "tbUsername";
+            this.tbUsername.Size = new System.Drawing.Size(100, 20);
+            this.tbUsername.TabIndex = 1;
             // 
-            // textBox3
+            // tbPassword
             // 
-            this.textBox3.Location = new System.Drawing.Point(242, 19);
-            this.textBox3.Name = "textBox3";
-            this.textBox3.Size = new System.Drawing.Size(100, 20);
-            this.textBox3.TabIndex = 2;
+            this.tbPassword.Location = new System.Drawing.Point(242, 19);
+            this.tbPassword.Name = "tbPassword";
+            this.tbPassword.PasswordChar = '*';
+            this.tbPassword.Size = new System.Drawing.Size(100, 20);
+            this.tbPassword.TabIndex = 2;
             // 
             // lbUser
             // 
@@ -365,6 +366,7 @@
             this.cbGuest.TabIndex = 5;
             this.cbGuest.Text = "Login as guest";
             this.cbGuest.UseVisualStyleBackColor = true;
+            this.cbGuest.CheckedChanged += new System.EventHandler(this.cbGuest_CheckedChanged);
             // 
             // btnLogin
             // 
@@ -389,6 +391,7 @@
             // tbGallery
             // 
             this.tbGallery.AutoSize = true;
+            this.tbGallery.Checked = true;
             this.tbGallery.Location = new System.Drawing.Point(10, 21);
             this.tbGallery.Name = "tbGallery";
             this.tbGallery.Size = new System.Drawing.Size(57, 17);
@@ -404,27 +407,26 @@
             this.rbTag.Name = "rbTag";
             this.rbTag.Size = new System.Drawing.Size(49, 17);
             this.rbTag.TabIndex = 1;
-            this.rbTag.TabStop = true;
             this.rbTag.Text = "Tags";
             this.rbTag.UseVisualStyleBackColor = true;
             // 
-            // textBox4
+            // tbTags
             // 
-            this.textBox4.Location = new System.Drawing.Point(6, 99);
-            this.textBox4.Multiline = true;
-            this.textBox4.Name = "textBox4";
-            this.textBox4.Size = new System.Drawing.Size(222, 118);
-            this.textBox4.TabIndex = 18;
-            this.textBox4.Text = "WORK IN PROGRESS\r\nTHIS DOESNT WORK YET";
+            this.tbTags.Location = new System.Drawing.Point(6, 99);
+            this.tbTags.Multiline = true;
+            this.tbTags.Name = "tbTags";
+            this.tbTags.Size = new System.Drawing.Size(222, 118);
+            this.tbTags.TabIndex = 18;
+            this.tbTags.Text = "WORK IN PROGRESS\r\nTHIS DOESNT WORK YET";
             // 
             // lbTags
             // 
             this.lbTags.AutoSize = true;
             this.lbTags.Location = new System.Drawing.Point(6, 83);
             this.lbTags.Name = "lbTags";
-            this.lbTags.Size = new System.Drawing.Size(34, 13);
+            this.lbTags.Size = new System.Drawing.Size(67, 13);
             this.lbTags.TabIndex = 19;
-            this.lbTags.Text = "Tags:";
+            this.lbTags.Text = "User / Tags:";
             // 
             // button2
             // 
@@ -617,7 +619,7 @@
         private System.Windows.Forms.TabPage e621;
         private System.Windows.Forms.TabPage inkbunny;
         private System.Windows.Forms.Label lbTags;
-        private System.Windows.Forms.TextBox textBox4;
+        private System.Windows.Forms.TextBox tbTags;
         private System.Windows.Forms.GroupBox gbOption;
         private System.Windows.Forms.RadioButton rbTag;
         private System.Windows.Forms.RadioButton tbGallery;
@@ -626,8 +628,8 @@
         private System.Windows.Forms.CheckBox cbGuest;
         private System.Windows.Forms.Label lbPass;
         private System.Windows.Forms.Label lbUser;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.TextBox textBox3;
+        private System.Windows.Forms.TextBox tbUsername;
+        private System.Windows.Forms.TextBox tbPassword;
         public System.Windows.Forms.Label label13;
         private System.Windows.Forms.Label label14;
         private System.Windows.Forms.Label label15;
