@@ -34,7 +34,6 @@ namespace win621dl
 
         public void begin(string tags)
         {
-
                 //get number of pages
 
                 parent.Invoke(new MethodInvoker(delegate ()
@@ -81,8 +80,6 @@ namespace win621dl
 
                 Console.WriteLine(Urls.Count());
                 download();
-            
-
         }
 
         public void download()
@@ -142,6 +139,35 @@ namespace win621dl
                 System.IO.File.WriteAllLines(path + "/IDs.txt", saveIDs.ToArray());
             }
 
+            stopWatch.Stop();
+            TimeSpan ts = stopWatch.Elapsed;
+            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+
+            parent.Invoke(new MethodInvoker(delegate ()
+            {
+                parent.listBox2.Items.Insert(0, "####################");
+                parent.listBox2.Items.Insert(0, "Downloaded " + SizeSuffix(totalBytes, 2));
+                parent.listBox2.Items.Insert(0, "Done in " + elapsedTime);
+                parent.listBox2.Items.Insert(0, "####################");
+                parent.label13.Text = "Status: Done!";
+                parent.button5.Enabled = true;
+                parent.button4.Enabled = true;
+            }));
+        }
+
+        static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        public string SizeSuffix(Int64 value, int decimalPlaces = 1)
+        {
+            if (value < 0) { return "-" + SizeSuffix(-value); }
+
+            int i = 0;
+            decimal dValue = value;
+            while (Math.Round(dValue, decimalPlaces) >= 1000)
+            {
+                dValue /= 1024;
+                i++;
+            }
+            return string.Format("{0:n" + decimalPlaces + "} {1}", dValue, SizeSuffixes[i]);
         }
     }
 }
