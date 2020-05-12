@@ -62,12 +62,15 @@
     <Compile Include="apiSet.Designer.cs">
       <DependentUpon>apiSet.cs</DependentUpon>
     </Compile>
+    <Compile Include="dataStructures.cs" />
     <Compile Include="done.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="done.Designer.cs">
       <DependentUpon>done.cs</DependentUpon>
     </Compile>
+    <Compile Include="E621hndl.cs" />
+    <Compile Include="InkbunnyHndl.cs" />
     <Compile Include="mainUI.cs">
       <SubType>Form</SubType>
     </Compile>
