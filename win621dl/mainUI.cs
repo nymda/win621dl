@@ -213,7 +213,7 @@ namespace win621dl
                 filename = filename.Replace(" SUCCESS ", string.Empty);
                 string[] filenameArray = filename.Split(new string[] { " " }, StringSplitOptions.None);
                 filename = filenameArray[1];
-                Process.Start(path + "/" + filename);
+                Process.Start(pathIB + "/" + filename);
             }
         }
     }
