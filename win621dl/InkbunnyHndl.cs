@@ -60,15 +60,17 @@ namespace win621dl
 
                 for (int i = 0; i < numPages; i++)
                 {
+                Console.WriteLine("GOT PAGE " + i);
+
                     byte[] dlDataByte = new byte[0];
 
                     if (dls == dlSetting.Tags)
                     {
-                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page=1", sessionID, tags));
+                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page={2}", sessionID, tags, i));
                     }
                     else if (dls == dlSetting.Gallery)
                     {
-                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page=1", sessionID, tags));
+                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page={2}", sessionID, tags, i));
                     }
                     string dlDataString = Encoding.UTF8.GetString(dlDataByte);
                     var parsedPageData = JsonConvert.DeserializeObject<RootobjectIB>(dlDataString);
@@ -97,6 +99,11 @@ namespace win621dl
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
+
+            foreach (List<String> dat in Urls)
+            {
+                Console.WriteLine(dat[0]);   
+            }
             foreach (List<String> dat in Urls)
             {
                 WebClient dlCli = new WebClient();
@@ -109,7 +116,6 @@ namespace win621dl
                     parent.label10.Text = "Artist: " + dat[2];
                     parent.label9.Text = "ID: " + dat[3];
                 }));
-
                 if (!System.IO.File.Exists(path + "/" + fileName))
                 {
                     dlCli.DownloadFile(dat[0], path + "/" + fileName);
