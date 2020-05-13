@@ -5,9 +5,9 @@ win621dl - windows alternative to the standard python e621 downloader.
 Updated for the new e621 API.
 
 Since last update:  
-Added back in support for inkbunny
-Fixed duplicate downloads (skips existing files)
-Each downloader exists in its own class now
+Added back in support for inkbunny  
+Fixed duplicate downloads (skips existing files)  
+Each downloader exists in its own class now  
 
 Possible issues:  
 API returns 300 items per request, requests are sent recursively. Due to this, downloading a lot of items may result in a stack overflow.  
