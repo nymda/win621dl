@@ -1,28 +1,20 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Runtime.InteropServices;
-using System.Security.Policy;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 
 namespace win621dl
 {
-    class E621hndl
+    internal class E621hndl
     {
         public mainUI parent { get; set; }
         public List<List<string>> Urls = new List<List<string>>();
-        public List<String> saveIDs = new List<String> { };
+        public List<string> saveIDs = new List<string> { };
         public int rescount = 0;
         public string appendLoginText = "";
         public string path = "";
@@ -47,7 +39,7 @@ namespace win621dl
             string dataraw = System.Text.Encoding.UTF8.GetString(dldata);
             dataraw = dataraw.Replace("\"has\":null", "\"has\":false");
             dataraw = dataraw.Replace("\"status_locked\":null", "\"status_locked\":false");
-            var parsedJson = JsonConvert.DeserializeObject<RootObject>(dataraw);
+            RootObject parsedJson = JsonConvert.DeserializeObject<RootObject>(dataraw);
             int results = parsedJson.posts.Count();
             rescount += results;
             int lastID = 0;
@@ -95,7 +87,7 @@ namespace win621dl
 
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
-            foreach (List<String> dat in Urls)
+            foreach (List<string> dat in Urls)
             {
                 WebClient dlCli = new WebClient();
                 string[] fileNameSplit = dat[0].Split('/');
@@ -141,7 +133,7 @@ namespace win621dl
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+            string elapsedTime = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
 
             parent.Invoke(new MethodInvoker(delegate ()
             {
@@ -155,8 +147,8 @@ namespace win621dl
             }));
         }
 
-        static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-        public string SizeSuffix(Int64 value, int decimalPlaces = 1)
+        private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        public string SizeSuffix(long value, int decimalPlaces = 1)
         {
             if (value < 0) { return "-" + SizeSuffix(-value); }
 

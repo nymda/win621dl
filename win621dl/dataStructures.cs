@@ -189,4 +189,121 @@ namespace win621dl
         public string latest_thumb_huge_noncustom_y { get; set; }
     }
 
+    public class RootobjectPID
+    {
+        public string sid { get; set; }
+        public int results_count { get; set; }
+        public string user_location { get; set; }
+        public SubmissionPID[] submissions { get; set; }
+    }
+
+    public class SubmissionPID
+    {
+        public string submission_id { get; set; }
+        public Keyword[] keywords { get; set; }
+        public string hidden { get; set; }
+        public string scraps { get; set; }
+        public string favorite { get; set; }
+        public string favorites_count { get; set; }
+        public string create_datetime { get; set; }
+        public string create_datetime_usertime { get; set; }
+        public string last_file_update_datetime { get; set; }
+        public string last_file_update_datetime_usertime { get; set; }
+        public string username { get; set; }
+        public string user_id { get; set; }
+        public string user_icon_file_name { get; set; }
+        public string user_icon_url_large { get; set; }
+        public string user_icon_url_medium { get; set; }
+        public string user_icon_url_small { get; set; }
+        public string file_name { get; set; }
+        public string file_url_full { get; set; }
+        public string file_url_screen { get; set; }
+        public string file_url_preview { get; set; }
+        public string thumbnail_url_huge_noncustom { get; set; }
+        public string thumbnail_url_large_noncustom { get; set; }
+        public string thumbnail_url_medium_noncustom { get; set; }
+        public string thumb_medium_noncustom_x { get; set; }
+        public string thumb_medium_noncustom_y { get; set; }
+        public string thumb_large_noncustom_x { get; set; }
+        public string thumb_large_noncustom_y { get; set; }
+        public string thumb_huge_noncustom_x { get; set; }
+        public string thumb_huge_noncustom_y { get; set; }
+        public string watching { get; set; }
+        public FilePID[] files { get; set; }
+        public object[] pools { get; set; }
+        public int pools_count { get; set; }
+        public string title { get; set; }
+        public string deleted { get; set; }
+        public string _public { get; set; }
+        public string mimetype { get; set; }
+        public string pagecount { get; set; }
+        public string rating_id { get; set; }
+        public string rating_name { get; set; }
+        public Rating[] ratings { get; set; }
+        public string submission_type_id { get; set; }
+        public string type_name { get; set; }
+        public string guest_block { get; set; }
+        public string friends_only { get; set; }
+        public string comments_count { get; set; }
+        public string views { get; set; }
+        public object sales_description { get; set; }
+        public string forsale { get; set; }
+        public string digitalsales { get; set; }
+        public string printsales { get; set; }
+        public string digital_price { get; set; }
+    }
+
+    public class Keyword
+    {
+        public string keyword_id { get; set; }
+        public string keyword_name { get; set; }
+        public string contributed { get; set; }
+        public string submissions_count { get; set; }
+    }
+
+    public class FilePID
+    {
+        public string file_id { get; set; }
+        public string file_name { get; set; }
+        public string file_url_full { get; set; }
+        public string file_url_screen { get; set; }
+        public string file_url_preview { get; set; }
+        public string mimetype { get; set; }
+        public string submission_id { get; set; }
+        public string user_id { get; set; }
+        public string submission_file_order { get; set; }
+        public string full_size_x { get; set; }
+        public string full_size_y { get; set; }
+        public string screen_size_x { get; set; }
+        public string screen_size_y { get; set; }
+        public string preview_size_x { get; set; }
+        public string preview_size_y { get; set; }
+        public string initial_file_md5 { get; set; }
+        public string full_file_md5 { get; set; }
+        public string large_file_md5 { get; set; }
+        public string small_file_md5 { get; set; }
+        public string thumbnail_md5 { get; set; }
+        public string deleted { get; set; }
+        public string create_datetime { get; set; }
+        public string create_datetime_usertime { get; set; }
+        public string thumbnail_url_huge_noncustom { get; set; }
+        public string thumbnail_url_large_noncustom { get; set; }
+        public string thumbnail_url_medium_noncustom { get; set; }
+        public string thumb_medium_noncustom_x { get; set; }
+        public string thumb_medium_noncustom_y { get; set; }
+        public string thumb_large_noncustom_x { get; set; }
+        public string thumb_large_noncustom_y { get; set; }
+        public string thumb_huge_noncustom_x { get; set; }
+        public string thumb_huge_noncustom_y { get; set; }
+    }
+
+    public class Rating
+    {
+        public string content_tag_id { get; set; }
+        public string name { get; set; }
+        public string description { get; set; }
+        public string rating_id { get; set; }
+    }
+
+
 }

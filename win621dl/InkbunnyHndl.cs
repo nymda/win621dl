@@ -6,16 +6,16 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace win621dl
 {
-    class InkbunnyHndl
+    internal class InkbunnyHndl
     {
         public mainUI parent { get; set; }
-        public List<List<string>> Urls = new List<List<string>>();
-        public List<String> saveIDs = new List<String> { };
+        public List<List<string>> Urls = new List<List<string>> { };
+        public List<List<string>> Ids = new List<List<string>> { };
+        public List<string> saveIDs = new List<string> { };
         public int rescount = 0;
         public string appendLoginText = "";
         public string path = "";
@@ -34,54 +34,72 @@ namespace win621dl
 
         public void begin(string tags)
         {
-                //get number of pages
+            //get number of pages
 
-                parent.Invoke(new MethodInvoker(delegate ()
-                {
-                    parent.label13.Text = "Status: Getting URL data...";
-                }));
+            parent.Invoke(new MethodInvoker(delegate ()
+            {
+                parent.label13.Text = "Status: Getting post IDs...";
+            }));
 
-                WebClient w = new WebClient();
+            WebClient w = new WebClient();
 
-                byte[] tmpObtainList = new byte[0];
+            byte[] tmpObtainList = new byte[0];
+
+            if (dls == dlSetting.Tags)
+            {
+                tmpObtainList = w.DownloadData(string.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page=1", sessionID, tags));
+            }
+            else if (dls == dlSetting.Gallery)
+            {
+                tmpObtainList = w.DownloadData(string.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page=1", sessionID, tags));
+            }
+
+            string tmpObtainString = Encoding.UTF8.GetString(tmpObtainList);
+            RootobjectIB parsedJson = JsonConvert.DeserializeObject<RootobjectIB>(tmpObtainString);
+            numPages = parsedJson.pages_count;
+
+            //recover IDs
+            for (int i = 0; i < numPages; i++)
+            {
+                byte[] dlDataByte = new byte[0];
 
                 if (dls == dlSetting.Tags)
                 {
-                    tmpObtainList = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page=1", sessionID, tags));
+                    dlDataByte = w.DownloadData(string.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page={2}", sessionID, tags, i));
                 }
-                else if(dls == dlSetting.Gallery)
+                else if (dls == dlSetting.Gallery)
                 {
-                    tmpObtainList = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page=1", sessionID, tags));
+                    dlDataByte = w.DownloadData(string.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page={2}", sessionID, tags, i));
                 }
+                string dlDataString = Encoding.UTF8.GetString(dlDataByte);
+                RootobjectIB parsedPageData = JsonConvert.DeserializeObject<RootobjectIB>(dlDataString);
 
-                string tmpObtainString = Encoding.UTF8.GetString(tmpObtainList);
-                var parsedJson = JsonConvert.DeserializeObject<RootobjectIB>(tmpObtainString);
-                numPages = parsedJson.pages_count;
+                List<string> tmp = new List<string> { };
 
-                for (int i = 0; i < numPages; i++)
+                foreach (Submission sb in parsedPageData.submissions)
                 {
-                Console.WriteLine("GOT PAGE " + i);
-
-                    byte[] dlDataByte = new byte[0];
-
-                    if (dls == dlSetting.Tags)
-                    {
-                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&text={1}&page={2}", sessionID, tags, i));
-                    }
-                    else if (dls == dlSetting.Gallery)
-                    {
-                        dlDataByte = w.DownloadData(String.Format("https://inkbunny.net/api_search.php?output_mode=json&sid={0}&username={1}&page={2}", sessionID, tags, i));
-                    }
-                    string dlDataString = Encoding.UTF8.GetString(dlDataByte);
-                    var parsedPageData = JsonConvert.DeserializeObject<RootobjectIB>(dlDataString);
-                    foreach (Submission sb in parsedPageData.submissions)
-                    {
-                        Urls.Add(new List<String> { sb.file_url_full, sb.title, sb.username, sb.submission_id});
-                    }
+                    tmp.Add(sb.submission_id);
                 }
 
-                Console.WriteLine(Urls.Count());
-                download();
+                string merged = string.Join(",", tmp);
+
+                Console.WriteLine(tmp.Count());
+
+                byte[] submissionByte = w.DownloadData(string.Format("https://inkbunny.net/api_submissions.php?sid={0}&submission_ids={1}", sessionID, merged));
+                string submissionsString = Encoding.UTF8.GetString(submissionByte);
+                RootobjectPID submissionsConverted = JsonConvert.DeserializeObject<RootobjectPID>(submissionsString);
+
+                foreach (SubmissionPID spid in submissionsConverted.submissions)
+                {
+                    foreach (FilePID f in spid.files)
+                    {
+                        Urls.Add(new List<string> { f.file_url_full, spid.title, spid.username, f.submission_id });
+                    }
+                }
+            }
+
+            Console.WriteLine(Urls.Count());
+            download();
         }
 
         public void download()
@@ -100,11 +118,11 @@ namespace win621dl
             Stopwatch stopWatch = new Stopwatch();
             stopWatch.Start();
 
-            foreach (List<String> dat in Urls)
+            foreach (List<string> dat in Urls)
             {
-                Console.WriteLine(dat[0]);   
+                Console.WriteLine(dat[0]);
             }
-            foreach (List<String> dat in Urls)
+            foreach (List<string> dat in Urls)
             {
                 WebClient dlCli = new WebClient();
                 string[] fileNameSplit = dat[0].Split('/');
@@ -147,7 +165,7 @@ namespace win621dl
 
             stopWatch.Stop();
             TimeSpan ts = stopWatch.Elapsed;
-            string elapsedTime = String.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
+            string elapsedTime = string.Format("{0:00}:{1:00}:{2:00}", ts.Hours, ts.Minutes, ts.Seconds);
 
             parent.Invoke(new MethodInvoker(delegate ()
             {
@@ -161,8 +179,8 @@ namespace win621dl
             }));
         }
 
-        static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
-        public string SizeSuffix(Int64 value, int decimalPlaces = 1)
+        private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
+        public string SizeSuffix(long value, int decimalPlaces = 1)
         {
             if (value < 0) { return "-" + SizeSuffix(-value); }
 

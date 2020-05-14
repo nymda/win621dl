@@ -49,6 +49,11 @@
             this.baseTC = new System.Windows.Forms.TabControl();
             this.e621 = new System.Windows.Forms.TabPage();
             this.inkbunny = new System.Windows.Forms.TabPage();
+            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.cbBigViolence = new System.Windows.Forms.CheckBox();
+            this.cbPorn = new System.Windows.Forms.CheckBox();
+            this.cbViolence = new System.Windows.Forms.CheckBox();
+            this.cbNudity = new System.Windows.Forms.CheckBox();
             this.label13 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.label15 = new System.Windows.Forms.Label();
@@ -73,19 +78,14 @@
             this.lbUser = new System.Windows.Forms.Label();
             this.tbUsername = new System.Windows.Forms.TextBox();
             this.tbPassword = new System.Windows.Forms.TextBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
-            this.cbNudity = new System.Windows.Forms.CheckBox();
-            this.cbViolence = new System.Windows.Forms.CheckBox();
-            this.cbPorn = new System.Windows.Forms.CheckBox();
-            this.cbBigViolence = new System.Windows.Forms.CheckBox();
             this.groupBox1.SuspendLayout();
             this.baseTC.SuspendLayout();
             this.e621.SuspendLayout();
             this.inkbunny.SuspendLayout();
+            this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.gbOption.SuspendLayout();
             this.GBlogin.SuspendLayout();
-            this.groupBox3.SuspendLayout();
             this.SuspendLayout();
             // 
             // tagBox
@@ -313,6 +313,68 @@
             this.inkbunny.Text = "Inkbunny";
             this.inkbunny.UseVisualStyleBackColor = true;
             // 
+            // groupBox3
+            // 
+            this.groupBox3.Controls.Add(this.cbBigViolence);
+            this.groupBox3.Controls.Add(this.cbPorn);
+            this.groupBox3.Controls.Add(this.cbViolence);
+            this.groupBox3.Controls.Add(this.cbNudity);
+            this.groupBox3.Enabled = false;
+            this.groupBox3.Location = new System.Drawing.Point(234, 86);
+            this.groupBox3.Name = "groupBox3";
+            this.groupBox3.Size = new System.Drawing.Size(290, 110);
+            this.groupBox3.TabIndex = 2;
+            this.groupBox3.TabStop = false;
+            this.groupBox3.Text = "Rating (Guest only)";
+            // 
+            // cbBigViolence
+            // 
+            this.cbBigViolence.AutoSize = true;
+            this.cbBigViolence.Checked = true;
+            this.cbBigViolence.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbBigViolence.Location = new System.Drawing.Point(9, 88);
+            this.cbBigViolence.Name = "cbBigViolence";
+            this.cbBigViolence.Size = new System.Drawing.Size(101, 17);
+            this.cbBigViolence.TabIndex = 3;
+            this.cbBigViolence.Text = "Strong Violence";
+            this.cbBigViolence.UseVisualStyleBackColor = true;
+            // 
+            // cbPorn
+            // 
+            this.cbPorn.AutoSize = true;
+            this.cbPorn.Checked = true;
+            this.cbPorn.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbPorn.Location = new System.Drawing.Point(9, 65);
+            this.cbPorn.Name = "cbPorn";
+            this.cbPorn.Size = new System.Drawing.Size(89, 17);
+            this.cbPorn.TabIndex = 2;
+            this.cbPorn.Text = "Sexual (Porn)";
+            this.cbPorn.UseVisualStyleBackColor = true;
+            // 
+            // cbViolence
+            // 
+            this.cbViolence.AutoSize = true;
+            this.cbViolence.Checked = true;
+            this.cbViolence.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbViolence.Location = new System.Drawing.Point(9, 42);
+            this.cbViolence.Name = "cbViolence";
+            this.cbViolence.Size = new System.Drawing.Size(93, 17);
+            this.cbViolence.TabIndex = 1;
+            this.cbViolence.Text = "Light Violence";
+            this.cbViolence.UseVisualStyleBackColor = true;
+            // 
+            // cbNudity
+            // 
+            this.cbNudity.AutoSize = true;
+            this.cbNudity.Checked = true;
+            this.cbNudity.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.cbNudity.Location = new System.Drawing.Point(9, 19);
+            this.cbNudity.Name = "cbNudity";
+            this.cbNudity.Size = new System.Drawing.Size(56, 17);
+            this.cbNudity.TabIndex = 0;
+            this.cbNudity.Text = "Nudity";
+            this.cbNudity.UseVisualStyleBackColor = true;
+            // 
             // label13
             // 
             this.label13.AutoSize = true;
@@ -441,7 +503,6 @@
             this.rbTags.Name = "rbTags";
             this.rbTags.Size = new System.Drawing.Size(222, 118);
             this.rbTags.TabIndex = 18;
-            this.rbTags.Text = "WORK IN PROGRESS\r\nSOME ITEMS DONT WORK";
             // 
             // gbOption
             // 
@@ -545,68 +606,6 @@
             this.tbPassword.Size = new System.Drawing.Size(100, 20);
             this.tbPassword.TabIndex = 2;
             // 
-            // groupBox3
-            // 
-            this.groupBox3.Controls.Add(this.cbBigViolence);
-            this.groupBox3.Controls.Add(this.cbPorn);
-            this.groupBox3.Controls.Add(this.cbViolence);
-            this.groupBox3.Controls.Add(this.cbNudity);
-            this.groupBox3.Enabled = false;
-            this.groupBox3.Location = new System.Drawing.Point(234, 86);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(290, 110);
-            this.groupBox3.TabIndex = 2;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Rating";
-            // 
-            // cbNudity
-            // 
-            this.cbNudity.AutoSize = true;
-            this.cbNudity.Checked = true;
-            this.cbNudity.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbNudity.Location = new System.Drawing.Point(9, 19);
-            this.cbNudity.Name = "cbNudity";
-            this.cbNudity.Size = new System.Drawing.Size(56, 17);
-            this.cbNudity.TabIndex = 0;
-            this.cbNudity.Text = "Nudity";
-            this.cbNudity.UseVisualStyleBackColor = true;
-            // 
-            // cbViolence
-            // 
-            this.cbViolence.AutoSize = true;
-            this.cbViolence.Checked = true;
-            this.cbViolence.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbViolence.Location = new System.Drawing.Point(9, 42);
-            this.cbViolence.Name = "cbViolence";
-            this.cbViolence.Size = new System.Drawing.Size(93, 17);
-            this.cbViolence.TabIndex = 1;
-            this.cbViolence.Text = "Light Violence";
-            this.cbViolence.UseVisualStyleBackColor = true;
-            // 
-            // cbPorn
-            // 
-            this.cbPorn.AutoSize = true;
-            this.cbPorn.Checked = true;
-            this.cbPorn.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbPorn.Location = new System.Drawing.Point(9, 65);
-            this.cbPorn.Name = "cbPorn";
-            this.cbPorn.Size = new System.Drawing.Size(89, 17);
-            this.cbPorn.TabIndex = 2;
-            this.cbPorn.Text = "Sexual (Porn)";
-            this.cbPorn.UseVisualStyleBackColor = true;
-            // 
-            // cbBigViolence
-            // 
-            this.cbBigViolence.AutoSize = true;
-            this.cbBigViolence.Checked = true;
-            this.cbBigViolence.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.cbBigViolence.Location = new System.Drawing.Point(9, 88);
-            this.cbBigViolence.Name = "cbBigViolence";
-            this.cbBigViolence.Size = new System.Drawing.Size(101, 17);
-            this.cbBigViolence.TabIndex = 3;
-            this.cbBigViolence.Text = "Strong Violence";
-            this.cbBigViolence.UseVisualStyleBackColor = true;
-            // 
             // mainUI
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -625,14 +624,14 @@
             this.e621.PerformLayout();
             this.inkbunny.ResumeLayout(false);
             this.inkbunny.PerformLayout();
+            this.groupBox3.ResumeLayout(false);
+            this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.gbOption.ResumeLayout(false);
             this.gbOption.PerformLayout();
             this.GBlogin.ResumeLayout(false);
             this.GBlogin.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
             this.ResumeLayout(false);
 
         }
