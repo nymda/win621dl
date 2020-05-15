@@ -18,7 +18,7 @@ namespace win621dl
         public int rescount = 0;
         public string appendLoginText = "";
         public string path = "";
-        public int totalBytes = 0;
+        public long totalBytes = 0;
         public E621hndl(mainUI parent, string path)
         {
             this.parent = parent;

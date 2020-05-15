@@ -19,7 +19,7 @@ namespace win621dl
         public int rescount = 0;
         public string appendLoginText = "";
         public string path = "";
-        public int totalBytes = 0;
+        public long totalBytes = 0;
         public string sessionID = "";
         public int numPages = 0;
         public dlSetting dls;
