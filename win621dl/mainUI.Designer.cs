@@ -261,7 +261,7 @@
             // 
             this.baseTC.Controls.Add(this.e621);
             this.baseTC.Controls.Add(this.inkbunny);
-            this.baseTC.Location = new System.Drawing.Point(12, 12);
+            this.baseTC.Location = new System.Drawing.Point(5, 5);
             this.baseTC.Name = "baseTC";
             this.baseTC.SelectedIndex = 0;
             this.baseTC.Size = new System.Drawing.Size(544, 460);
@@ -610,7 +610,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(568, 485);
+            this.ClientSize = new System.Drawing.Size(551, 467);
             this.Controls.Add(this.baseTC);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

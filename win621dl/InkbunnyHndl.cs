@@ -38,7 +38,7 @@ namespace win621dl
 
             parent.Invoke(new MethodInvoker(delegate ()
             {
-                parent.label13.Text = "Status: Getting post IDs...";
+                parent.label13.Text = "Status: Getting data...";
             }));
 
             WebClient w = new WebClient();
@@ -178,6 +178,7 @@ namespace win621dl
                 parent.button4.Enabled = true;
             }));
         }
+
 
         private static readonly string[] SizeSuffixes = { "bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB" };
         public string SizeSuffix(long value, int decimalPlaces = 1)

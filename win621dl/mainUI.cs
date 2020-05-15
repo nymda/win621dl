@@ -132,32 +132,34 @@ namespace win621dl
         {
             try
             {
-                if (cbGuest.Checked)
+                if ((!(tbUsername.Text == "") && !(tbPassword.Text == "")) || cbGuest.Checked)
                 {
-                    byte[] dat = w.DownloadData("https://inkbunny.net/api_login.php?output_mode=json&username=guest");
-                    string raw = Encoding.UTF8.GetString(dat);
-                    sessionData parsedJson = JsonConvert.DeserializeObject<sessionData>(raw);
-                    sessionID = parsedJson.sid;
-                    Console.WriteLine(parsedJson.ratingsmask);
+                    if (cbGuest.Checked)
+                    {
+                        byte[] dat = w.DownloadData("https://inkbunny.net/api_login.php?output_mode=json&username=guest");
+                        string raw = Encoding.UTF8.GetString(dat);
+                        sessionData parsedJson = JsonConvert.DeserializeObject<sessionData>(raw);
+                        sessionID = parsedJson.sid;
+                        Console.WriteLine(parsedJson.ratingsmask);
 
-                    //set this session to allow all content
-                    w.DownloadData(string.Format("https://inkbunny.net/api_userrating.php?output_mode=json&sid={0}{1}", sessionID, createGuestPreferences()));
-                }
-                else
-                {
-                    string username = tbUsername.Text;
-                    string password = tbPassword.Text;
+                        //set this session to allow all content
+                        w.DownloadData(string.Format("https://inkbunny.net/api_userrating.php?output_mode=json&sid={0}{1}", sessionID, createGuestPreferences()));
+                    }
+                    else
+                    {
+                        string username = tbUsername.Text;
+                        string password = tbPassword.Text;
 
-                    byte[] dat = w.DownloadData(string.Format("https://inkbunny.net/api_login.php?output_mode=json&username={0}&password={1}", username, password));
-                    string raw = Encoding.UTF8.GetString(dat);
-                    sessionData parsedJson = JsonConvert.DeserializeObject<sessionData>(raw);
-                    sessionID = parsedJson.sid;
-                    Console.WriteLine(parsedJson.ratingsmask);
+                        byte[] dat = w.DownloadData(string.Format("https://inkbunny.net/api_login.php?output_mode=json&username={0}&password={1}", username, password));
+                        string raw = Encoding.UTF8.GetString(dat);
+                        sessionData parsedJson = JsonConvert.DeserializeObject<sessionData>(raw);
+                        sessionID = parsedJson.sid;
+                        Console.WriteLine(parsedJson.ratingsmask);
+                    }
+                    btnLogin.Enabled = false;
+                    listBox2.Items.Insert(0, "Logged in. ");
+                    cbGuest.Enabled = false;
                 }
-                btnLogin.Enabled = false;
-                listBox2.Items.Insert(0, "Logged in. " + sessionID);
-                Clipboard.SetText(sessionID);
-                cbGuest.Enabled = false;
             }
             catch
             {
